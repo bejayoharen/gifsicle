@@ -1,8 +1,7 @@
-![gifsicle-logo](https://raw.githubusercontent.com/kohler/gifsicle/master/logo.gif)
+You probably want the main branch of gifsicle. This is my attempt to create a dynamic library.
 
 Gifsicle
 ========
-[![TravisCI status](https://travis-ci.org/kohler/gifsicle.svg?branch=master)](https://travis-ci.org/kohler/gifsicle)
 
 Gifsicle manipulates GIF image files. Depending on command line
 options, it can merge several GIFs into a GIF animation; explode an
