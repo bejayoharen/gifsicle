@@ -15,6 +15,7 @@ configure
 depcomp
 gifdiff
 gifsicle
+gifsicle.dylib
 gifsicle-*.rpm
 gifsicle-*.tar.gz
 gifview

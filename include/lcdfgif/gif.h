@@ -15,6 +15,31 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+    
+// Shared library support
+#ifdef GIFSICLE_DLL
+# if defined _WIN32 || defined __CYGWIN__
+#  define GIFSICLE_HELPER_DLL_IMPORT __declspec(dllimport)
+#  define GIFSICLE_HELPER_DLL_EXPORT __declspec(dllexport)
+#  define GIFSICLE_HELPER_DLL_LOCAL
+# else
+#  if __GNUC__ >= 4
+#   define GIFSICLE_HELPER_DLL_IMPORT __attribute__ ((visibility ("default")))
+#   define GIFSICLE_HELPER_DLL_EXPORT __attribute__ ((visibility ("default")))
+#   define GIFSICLE_HELPER_DLL_LOCAL  __attribute__ ((visibility ("hidden")))
+#  else
+#   define GIFSICLE_HELPER_DLL_IMPORT
+#   define GIFSICLE_HELPER_DLL_EXPORT
+#   define GIFSICLE_HELPER_DLL_LOCAL
+#   warning "visibility not supported by this compiler"
+#  endif
+# endif
+# define GIFSICLE_API GIFSICLE_HELPER_DLL_EXPORT
+#else
+# define GIFSICLE_API
+#endif //GIFSICLE_DLL
+    
+    
 
 /* NOTE: You should define the types uint8_t, uint16_t and uint32_t before
    including this file, probably by #including <inttypes.h>. */
@@ -60,11 +85,11 @@ struct Gif_Stream {
     int refcount;
 };
 
-Gif_Stream *    Gif_NewStream(void);
-void            Gif_DeleteStream(Gif_Stream *);
+GIFSICLE_API Gif_Stream *    Gif_NewStream(void);
+GIFSICLE_API void            Gif_DeleteStream(Gif_Stream *);
 
-Gif_Stream *    Gif_CopyStreamSkeleton(Gif_Stream *);
-Gif_Stream *    Gif_CopyStreamImages(Gif_Stream *);
+GIFSICLE_API Gif_Stream *    Gif_CopyStreamSkeleton(Gif_Stream *);
+GIFSICLE_API Gif_Stream *    Gif_CopyStreamImages(Gif_Stream *);
 
 #define         Gif_ScreenWidth(gfs)            ((gfs)->screen_width)
 #define         Gif_ScreenHeight(gfs)           ((gfs)->screen_height)
@@ -74,9 +99,9 @@ Gif_Stream *    Gif_CopyStreamImages(Gif_Stream *);
 #define         GIF_MAX_SCREEN_WIDTH                    65535
 #define         GIF_MAX_SCREEN_HEIGHT                   65535
 
-void            Gif_CalculateScreenSize(Gif_Stream *, int force);
-int             Gif_Unoptimize(Gif_Stream *);
-int             Gif_FullUnoptimize(Gif_Stream *, int flags);
+GIFSICLE_API void            Gif_CalculateScreenSize(Gif_Stream *, int force);
+GIFSICLE_API int             Gif_Unoptimize(Gif_Stream *);
+GIFSICLE_API int             Gif_FullUnoptimize(Gif_Stream *, int flags);
 
 
 /** GIF_IMAGE **/
@@ -120,24 +145,24 @@ struct Gif_Image {
 #define         GIF_DISPOSAL_BACKGROUND         2
 #define         GIF_DISPOSAL_PREVIOUS           3
 
-Gif_Image *     Gif_NewImage(void);
-void            Gif_DeleteImage(Gif_Image *gfi);
+GIFSICLE_API Gif_Image *     Gif_NewImage(void);
+GIFSICLE_API void            Gif_DeleteImage(Gif_Image *gfi);
 
-int             Gif_AddImage(Gif_Stream *gfs, Gif_Image *gfi);
-void            Gif_RemoveImage(Gif_Stream *gfs, int i);
-Gif_Image *     Gif_CopyImage(Gif_Image *gfi);
-void            Gif_MakeImageEmpty(Gif_Image* gfi);
+GIFSICLE_API int             Gif_AddImage(Gif_Stream *gfs, Gif_Image *gfi);
+GIFSICLE_API void            Gif_RemoveImage(Gif_Stream *gfs, int i);
+GIFSICLE_API Gif_Image *     Gif_CopyImage(Gif_Image *gfi);
+GIFSICLE_API void            Gif_MakeImageEmpty(Gif_Image* gfi);
 
-Gif_Image *     Gif_GetImage(Gif_Stream *gfs, int i);
-Gif_Image *     Gif_GetNamedImage(Gif_Stream *gfs, const char *name);
-int             Gif_ImageNumber(Gif_Stream *gfs, Gif_Image *gfi);
+GIFSICLE_API Gif_Image *     Gif_GetImage(Gif_Stream *gfs, int i);
+GIFSICLE_API Gif_Image *     Gif_GetNamedImage(Gif_Stream *gfs, const char *name);
+GIFSICLE_API int             Gif_ImageNumber(Gif_Stream *gfs, Gif_Image *gfi);
 
 #define         Gif_ImageWidth(gfi)             ((gfi)->width)
 #define         Gif_ImageHeight(gfi)            ((gfi)->height)
 #define         Gif_ImageDelay(gfi)             ((gfi)->delay)
 #define         Gif_ImageUserData(gfi)          ((gfi)->userdata)
 #define         Gif_SetImageUserData(gfi, v)    ((gfi)->userdata = v)
-int             Gif_ImageColorBound(const Gif_Image* gfi);
+GIFSICLE_API int             Gif_ImageColorBound(const Gif_Image* gfi);
 
 typedef         void (*Gif_ReadErrorHandler)(Gif_Stream* gfs,
                                              Gif_Image* gfi,
@@ -150,20 +175,20 @@ typedef struct {
 } Gif_CompressInfo;
 
 #define         Gif_UncompressImage(gfs, gfi) Gif_FullUncompressImage((gfs),(gfi),0)
-int             Gif_FullUncompressImage(Gif_Stream* gfs, Gif_Image* gfi,
+GIFSICLE_API int             Gif_FullUncompressImage(Gif_Stream* gfs, Gif_Image* gfi,
                                         Gif_ReadErrorHandler handler);
-int             Gif_CompressImage(Gif_Stream *gfs, Gif_Image *gfi);
-int             Gif_FullCompressImage(Gif_Stream *gfs, Gif_Image *gfi,
+GIFSICLE_API int             Gif_CompressImage(Gif_Stream *gfs, Gif_Image *gfi);
+GIFSICLE_API int             Gif_FullCompressImage(Gif_Stream *gfs, Gif_Image *gfi,
                                       const Gif_CompressInfo *gcinfo);
-void            Gif_ReleaseUncompressedImage(Gif_Image *gfi);
-void            Gif_ReleaseCompressedImage(Gif_Image *gfi);
-int             Gif_SetUncompressedImage(Gif_Image *gfi, uint8_t *data,
+GIFSICLE_API void            Gif_ReleaseUncompressedImage(Gif_Image *gfi);
+GIFSICLE_API void            Gif_ReleaseCompressedImage(Gif_Image *gfi);
+GIFSICLE_API int             Gif_SetUncompressedImage(Gif_Image *gfi, uint8_t *data,
                         void (*free_data)(void *), int data_interlaced);
-int             Gif_CreateUncompressedImage(Gif_Image* gfi, int data_interlaced);
+GIFSICLE_API int             Gif_CreateUncompressedImage(Gif_Image* gfi, int data_interlaced);
 
-int             Gif_ClipImage(Gif_Image *gfi, int l, int t, int w, int h);
+GIFSICLE_API int             Gif_ClipImage(Gif_Image *gfi, int l, int t, int w, int h);
 
-void            Gif_InitCompressInfo(Gif_CompressInfo *gcinfo);
+GIFSICLE_API void            Gif_InitCompressInfo(Gif_CompressInfo *gcinfo);
 
 
 /** GIF_COLORMAP **/
@@ -185,21 +210,21 @@ struct Gif_Colormap {
     Gif_Color *col;
 };
 
-Gif_Colormap *  Gif_NewColormap(void);
-Gif_Colormap *  Gif_NewFullColormap(int count, int capacity);
-void            Gif_DeleteColormap(Gif_Colormap *);
+GIFSICLE_API Gif_Colormap *  Gif_NewColormap(void);
+GIFSICLE_API Gif_Colormap *  Gif_NewFullColormap(int count, int capacity);
+GIFSICLE_API void            Gif_DeleteColormap(Gif_Colormap *);
 
-Gif_Colormap *  Gif_CopyColormap(Gif_Colormap *);
+GIFSICLE_API Gif_Colormap *  Gif_CopyColormap(Gif_Colormap *);
 
-int             Gif_ColorEq(Gif_Color *, Gif_Color *);
+GIFSICLE_API int             Gif_ColorEq(Gif_Color *, Gif_Color *);
 #define         GIF_COLOREQ(c1, c2) \
 ((c1)->gfc_red==(c2)->gfc_red && (c1)->gfc_green==(c2)->gfc_green && \
  (c1)->gfc_blue==(c2)->gfc_blue)
 #define         GIF_SETCOLOR(c, r, g, b) \
 ((c)->gfc_red = (r), (c)->gfc_green = (g), (c)->gfc_blue = (b))
 
-int             Gif_FindColor(Gif_Colormap *, Gif_Color *);
-int             Gif_AddColor(Gif_Colormap *, Gif_Color *, int look_from);
+GIFSICLE_API int             Gif_FindColor(Gif_Colormap *, Gif_Color *);
+GIFSICLE_API int             Gif_AddColor(Gif_Colormap *, Gif_Color *, int look_from);
 
 
 /** GIF_COMMENT **/
@@ -211,10 +236,10 @@ struct Gif_Comment {
     int cap;
 };
 
-Gif_Comment *   Gif_NewComment(void);
-void            Gif_DeleteComment(Gif_Comment *);
-int             Gif_AddCommentTake(Gif_Comment *, char *, int);
-int             Gif_AddComment(Gif_Comment *, const char *, int);
+GIFSICLE_API Gif_Comment *   Gif_NewComment(void);
+GIFSICLE_API void            Gif_DeleteComment(Gif_Comment *);
+GIFSICLE_API int             Gif_AddCommentTake(Gif_Comment *, char *, int);
+GIFSICLE_API int             Gif_AddComment(Gif_Comment *, const char *, int);
 
 
 /** GIF_EXTENSION **/
@@ -234,10 +259,10 @@ struct Gif_Extension {
 };
 
 
-Gif_Extension*  Gif_NewExtension(int kind, const char* appname, int applength);
-void            Gif_DeleteExtension(Gif_Extension* gfex);
-Gif_Extension*  Gif_CopyExtension(Gif_Extension* gfex);
-int             Gif_AddExtension(Gif_Stream* gfs, Gif_Image* gfi,
+GIFSICLE_API Gif_Extension*  Gif_NewExtension(int kind, const char* appname, int applength);
+GIFSICLE_API void            Gif_DeleteExtension(Gif_Extension* gfex);
+GIFSICLE_API Gif_Extension*  Gif_CopyExtension(Gif_Extension* gfex);
+GIFSICLE_API int             Gif_AddExtension(Gif_Stream* gfs, Gif_Image* gfi,
                                  Gif_Extension* gfex);
 
 
@@ -257,16 +282,16 @@ struct Gif_Record {
 #define GIF_WRITE_OPTIMIZE              4
 #define GIF_WRITE_SHRINK                8
 
-void            Gif_SetErrorHandler(Gif_ReadErrorHandler handler);
-Gif_Stream*     Gif_ReadFile(FILE* f);
-Gif_Stream*     Gif_FullReadFile(FILE* f, int flags, const char* landmark,
+    GIFSICLE_API void            Gif_SetErrorHandler(Gif_ReadErrorHandler handler);
+GIFSICLE_API Gif_Stream*     Gif_ReadFile(FILE* f);
+GIFSICLE_API Gif_Stream*     Gif_FullReadFile(FILE* f, int flags, const char* landmark,
                                  Gif_ReadErrorHandler handler);
-Gif_Stream*     Gif_ReadRecord(const Gif_Record* record);
-Gif_Stream*     Gif_FullReadRecord(const Gif_Record* record, int flags,
+GIFSICLE_API Gif_Stream*     Gif_ReadRecord(const Gif_Record* record);
+GIFSICLE_API Gif_Stream*     Gif_FullReadRecord(const Gif_Record* record, int flags,
                                    const char* landmark,
                                    Gif_ReadErrorHandler handler);
-int             Gif_WriteFile(Gif_Stream *gfs, FILE *f);
-int             Gif_FullWriteFile(Gif_Stream *gfs,
+GIFSICLE_API int             Gif_WriteFile(Gif_Stream *gfs, FILE *f);
+GIFSICLE_API int             Gif_FullWriteFile(Gif_Stream *gfs,
                                   const Gif_CompressInfo *gcinfo, FILE *f);
 
 #define Gif_ReadFile(f)         Gif_FullReadFile((f),GIF_READ_UNCOMPRESSED,0,0)
@@ -275,33 +300,33 @@ int             Gif_FullWriteFile(Gif_Stream *gfs,
 #define Gif_WriteFile(s, f)     Gif_FullWriteFile((s),0,(f))
 
 typedef struct Gif_Writer Gif_Writer;
-Gif_Writer*     Gif_IncrementalWriteFileInit(Gif_Stream* gfs, const Gif_CompressInfo* gcinfo, FILE *f);
-int             Gif_IncrementalWriteImage(Gif_Writer* grr, Gif_Stream* gfs, Gif_Image* gfi);
-int             Gif_IncrementalWriteComplete(Gif_Writer* grr, Gif_Stream* gfs);
+GIFSICLE_API Gif_Writer*     Gif_IncrementalWriteFileInit(Gif_Stream* gfs, const Gif_CompressInfo* gcinfo, FILE *f);
+GIFSICLE_API int             Gif_IncrementalWriteImage(Gif_Writer* grr, Gif_Stream* gfs, Gif_Image* gfi);
+GIFSICLE_API int             Gif_IncrementalWriteComplete(Gif_Writer* grr, Gif_Stream* gfs);
 
 
 /** HOOKS AND MISCELLANEOUS **/
 
-int             Gif_InterlaceLine(int y, int height);
-char *          Gif_CopyString(const char *);
+GIFSICLE_API int             Gif_InterlaceLine(int y, int height);
+GIFSICLE_API char *          Gif_CopyString(const char *);
 
 #define GIF_T_STREAM                    (0)
 #define GIF_T_IMAGE                     (1)
 #define GIF_T_COLORMAP                  (2)
 typedef void    (*Gif_DeletionHookFunc)(int, void *, void *);
-int             Gif_AddDeletionHook(int, Gif_DeletionHookFunc, void *);
-void            Gif_RemoveDeletionHook(int, Gif_DeletionHookFunc, void *);
+GIFSICLE_API int             Gif_AddDeletionHook(int, Gif_DeletionHookFunc, void *);
+GIFSICLE_API void            Gif_RemoveDeletionHook(int, Gif_DeletionHookFunc, void *);
 
 #ifdef GIF_DEBUGGING
 #define         GIF_DEBUG(x)                    Gif_Debug x
-void            Gif_Debug(char *x, ...);
+GIFSICLE_API void            Gif_Debug(char *x, ...);
 #else
 #define         GIF_DEBUG(x)
 #endif
 
-void*           Gif_Realloc(void* p, size_t s, size_t n,
+GIFSICLE_API void*           Gif_Realloc(void* p, size_t s, size_t n,
                             const char* file, int line);
-void            Gif_Free(void* p);
+GIFSICLE_API void            Gif_Free(void* p);
 #if !GIF_ALLOCATOR_DEFINED
 # define        Gif_Free        free
 #endif
