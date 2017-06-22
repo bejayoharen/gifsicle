@@ -1,5 +1,13 @@
 You probably want the main branch of gifsicle. This is my attempt to create a dynamic library.
 
+It contains some changes to:
+
+- Export some functions.
+- Log activity to help debugging and figure out what commandline options in gifsicle correspond to what function calls and arguments.
+- A script to build the library. This is a dirty hack. Ideally I would have modified the makefile, but this was easier.
+- A folder with some sample code. You will have to install the library on your system (or ~/lib on many systems) before this works.
+
+
 Gifsicle
 ========
 
