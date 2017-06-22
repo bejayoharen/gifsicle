@@ -175,6 +175,7 @@ no_more_transparency(Gif_Image *gfi1, Gif_Image *gfi2)
 int
 Gif_FullUnoptimize(Gif_Stream *gfs, int flags)
 {
+  TRACE_LOG( "Unoptimize/FullUnoptimize %p %d", gfs, flags);
   int ok = 1;
   int i;
   unsigned pos, size;

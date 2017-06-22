@@ -445,6 +445,14 @@ finalize_optimizer(Gif_Stream *gfs, int optimize_flags)
 #define X(t) t ## 32
 #include "opttemplate.c"
 
+
+void
+Gif_OptimizeFragments(Gif_Stream *gfs, int optimize_flags, int huge_stream)
+{
+    TRACE_LOG( "OptimizeFragments %p %d %d", gfs, optimize_flags, huge_stream )
+    optimize_fragments(gfs,optimize_flags,huge_stream);
+}
+
 /* the interface function! */
 
 void

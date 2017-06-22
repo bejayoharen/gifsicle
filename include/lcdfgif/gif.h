@@ -15,7 +15,13 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
+ 
+#ifdef TRACE_LOGGING
+# define TRACE_LOG(...) { fprintf(stderr, "TRACE: "); fprintf(stderr, __VA_ARGS__); fprintf(stderr, "\n"); }
+#else
+# define TRACE_LOG(...)
+#endif
+
 // Shared library support
 #ifdef GIFSICLE_DLL
 # if defined _WIN32 || defined __CYGWIN__
@@ -102,6 +108,10 @@ GIFSICLE_API Gif_Stream *    Gif_CopyStreamImages(Gif_Stream *);
 GIFSICLE_API void            Gif_CalculateScreenSize(Gif_Stream *, int force);
 GIFSICLE_API int             Gif_Unoptimize(Gif_Stream *);
 GIFSICLE_API int             Gif_FullUnoptimize(Gif_Stream *, int flags);
+
+// optimize flags are (I think) the flags passed to the -O commandline argument.
+// huge_Stream is generally set to true if the file is over 200MB
+GIFSICLE_API void            Gif_OptimizeFragments(Gif_Stream *gfs, int optimize_flags, int huge_stream);
 
 
 /** GIF_IMAGE **/
@@ -303,6 +313,26 @@ typedef struct Gif_Writer Gif_Writer;
 GIFSICLE_API Gif_Writer*     Gif_IncrementalWriteFileInit(Gif_Stream* gfs, const Gif_CompressInfo* gcinfo, FILE *f);
 GIFSICLE_API int             Gif_IncrementalWriteImage(Gif_Writer* grr, Gif_Stream* gfs, Gif_Image* gfi);
 GIFSICLE_API int             Gif_IncrementalWriteComplete(Gif_Writer* grr, Gif_Stream* gfs);
+
+/** Resizing **/
+// this will resize a gif stream to the given width and height.
+// resize flags (can be or'ed together?)
+#define GT_RESIZE_FIT           1
+#define GT_RESIZE_FIT_DOWN      2
+#define GT_RESIZE_FIT_UP        4
+#define GT_RESIZE_MIN_DIMEN     8
+
+// resize methods
+#define SCALE_METHOD_POINT      0
+#define SCALE_METHOD_BOX        1
+#define SCALE_METHOD_MIX        2
+#define SCALE_METHOD_CATROM     3
+#define SCALE_METHOD_LANCZOS2   4
+#define SCALE_METHOD_LANCZOS3   5
+#define SCALE_METHOD_MITCHELL   6
+
+GIFSICLE_API void            Gif_ResizeStream(Gif_Stream* gfs, double new_width, double new_height, int flags, int method, int scale_colors);
+
 
 
 /** HOOKS AND MISCELLANEOUS **/

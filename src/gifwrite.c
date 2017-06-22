@@ -877,6 +877,7 @@ Gif_FullWriteFile(Gif_Stream *gfs, const Gif_CompressInfo *gcinfo,
   int ok = gif_writer_init(&grr, f, gcinfo)
            && write_gif(gfs, &grr);
   gif_writer_cleanup(&grr);
+  TRACE_LOG( "FullWriteFile %p %p -> %d", gfs, gcinfo, ok )
   return ok;
 }
 
@@ -894,6 +895,7 @@ Gif_IncrementalWriteFileInit(Gif_Stream* gfs, const Gif_CompressInfo* gcinfo,
     write_logical_screen_descriptor(gfs, grr);
     if (gfs->loopcount > -1)
         write_netscape_loop_extension(gfs->loopcount, grr);
+    TRACE_LOG( "IncrementalWriteFileInit %p %p %p -> %p", gfs, gcinfo, f, grr )
     return grr;
 }
 
@@ -909,7 +911,9 @@ Gif_IncrementalWriteImage(Gif_Writer* grr, Gif_Stream* gfs, Gif_Image* gfi)
         write_name_extension(gfi->identifier, grr);
     if (gfi->transparent != -1 || gfi->disposal || gfi->delay)
         write_graphic_control_extension(gfi, grr);
-    return write_image(gfs, gfi, grr);
+    int r = write_image(gfs, gfi, grr);
+    TRACE_LOG( "IncrementalWriteImage %p %p %p -> %d", grr, gfs, gfi, r )
+    return r;
 }
 
 int
@@ -923,6 +927,7 @@ Gif_IncrementalWriteComplete(Gif_Writer* grr, Gif_Stream* gfs)
     gifputbyte(';', grr);
     gif_writer_cleanup(grr);
     Gif_Delete(grr);
+    TRACE_LOG( "IncrementalWriteComplete %p %p -> 1", grr, gfs )
     return 1;
 }
 

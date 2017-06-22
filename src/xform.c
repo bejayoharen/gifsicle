@@ -1296,10 +1296,17 @@ resize_dimensions(int* w, int* h, double new_width, double new_height,
 }
 
 void
+Gif_ResizeStream(Gif_Stream* gfs, double new_width, double new_height, int flags, int method, int scale_colors)
+{
+	resize_stream(gfs,new_width,new_height,flags,method,scale_colors);
+}
+
+void
 resize_stream(Gif_Stream* gfs,
               double new_width, double new_height,
               int flags, int method, int scale_colors)
 {
+    TRACE_LOG( "ResizeStream %p %f %f %d %d %d", gfs, new_width, new_height, flags, method, scale_colors );
     int nw, nh, nthreads = thread_count, i;
     (void) i;
 

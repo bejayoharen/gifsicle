@@ -146,18 +146,6 @@ extern Clp_Parser* clp;
 #define GT_SCALING_RESIZE       1
 #define GT_SCALING_SCALE        2
 
-#define GT_RESIZE_FIT           1
-#define GT_RESIZE_FIT_DOWN      2
-#define GT_RESIZE_FIT_UP        4
-#define GT_RESIZE_MIN_DIMEN     8
-
-#define SCALE_METHOD_POINT      0
-#define SCALE_METHOD_BOX        1
-#define SCALE_METHOD_MIX        2
-#define SCALE_METHOD_CATROM     3
-#define SCALE_METHOD_LANCZOS2   4
-#define SCALE_METHOD_LANCZOS3   5
-#define SCALE_METHOD_MITCHELL   6
 
 #define GT_OPT_MASK             0xFFFF
 #define GT_OPT_KEEPEMPTY        0x10000

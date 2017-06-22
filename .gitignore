@@ -29,3 +29,4 @@ stamp-h*
 ungifsicle-*.rpm
 ungifsicle-*.tar.gz
 compile
+.*.swp

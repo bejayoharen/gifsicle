@@ -479,6 +479,7 @@ Gif_FullCompressImage(Gif_Stream *gfs, Gif_Image *gfi,
   }
 
  done:
+  TRACE_LOG( "FullUncompressImage %p %p %p", gfs, gfi, gcinfo )
   gif_writer_cleanup(&grr);
   return ok;
 }

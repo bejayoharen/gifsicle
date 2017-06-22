@@ -518,6 +518,8 @@ Gif_FullUncompressImage(Gif_Stream* gfs, Gif_Image* gfi,
   Gif_Reader grr;
   int ok = 0;
 
+  TRACE_LOG("FullUncompressImage %p, %p", gfs, gfs)
+
   /* return right away if image is already uncompressed. this might screw over
      people who expect re-uncompressing to restore the compressed version. */
   if (gfi->img)
@@ -919,7 +921,9 @@ Gif_FullReadFile(FILE *f, int read_flags,
   grr.byte_getter = file_byte_getter;
   grr.block_getter = file_block_getter;
   grr.eofer = file_eofer;
-  return read_gif(&grr, read_flags, landmark, h);
+  Gif_Stream *r = read_gif(&grr, read_flags, landmark, h);
+  TRACE_LOG( "ReadFile %p %d %s -> %p", f, read_flags, landmark, r )
+  return r;
 }
 
 Gif_Stream *
@@ -931,7 +935,9 @@ Gif_FullReadRecord(const Gif_Record *gifrec, int read_flags,
   make_data_reader(&grr, gifrec->data, gifrec->length);
   if (read_flags & GIF_READ_CONST_RECORD)
     read_flags |= GIF_READ_COMPRESSED;
-  return read_gif(&grr, read_flags, landmark, h);
+  Gif_Stream *r = read_gif(&grr, read_flags, landmark, h);
+  TRACE_LOG( "FullReadRecord %p %d %s -> %p", gifrec, read_flags, landmark, r )
+  return r;
 }
 
 
@@ -952,6 +958,7 @@ Gif_ReadRecord(const Gif_Record *gifrec)
 
 void
 Gif_SetErrorHandler(Gif_ReadErrorHandler handler) {
+    TRACE_LOG( "SetErrorHandler" )
     default_error_handler = handler;
 }
 
