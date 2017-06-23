@@ -1,11 +1,28 @@
 You probably want the main branch of gifsicle. This is my attempt to create a dynamic library.
 
+About this Fork
+===============
+
 It contains some changes to:
 
 - Export some functions.
 - Log activity to help debugging and figure out what commandline options in gifsicle correspond to what function calls and arguments.
 - A script to build the library. This is a dirty hack. Ideally I would have modified the makefile, but this was easier.
 - A folder with some sample code. You will have to install the library on your system (or ~/lib on many systems) before this works.
+
+Howto
+=====
+
+To do a clean compile from scratch, run:
+
+`$ ./compile-dylib.sh TRACE`
+
+where `TRACE` is either `true` or `false`. You'll want `false` in production.
+
+Now, copy the include folder and `src/libgifsicle.dylib` into your project in the usual way.
+
+In the `giflib-tester` foler you'll find some sample code for resizing. This is more useful than trying to
+read the gifsicle source files.
 
 
 Gifsicle

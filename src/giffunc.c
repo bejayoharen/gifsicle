@@ -666,7 +666,7 @@ Gif_ColorEq(Gif_Color *c1, Gif_Color *c2)
 {
   int ret = GIF_COLOREQ(c1, c2);
   TRACE_LOG( "Color Eq %s", ret ? "true" : "false")
-  return GIF_COLOREQ(c1, c2);
+  return ret;
 }
 
 
