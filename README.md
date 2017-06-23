@@ -1,9 +1,7 @@
-You probably want the main branch of gifsicle. This is my attempt to create a dynamic library.
-
 About this Fork
 ===============
 
-It contains some changes to:
+You probably want the main branch of gifsicle. This is my attempt to create a dynamic library. This fork contains some changes to:
 
 - Export some functions.
 - Log activity to help debugging and figure out what commandline options in gifsicle correspond to what function calls and arguments.
@@ -21,9 +19,11 @@ where `TRACE` is either `true` or `false`. You'll want `false` in production.
 
 Now, copy the include folder and `src/libgifsicle.dylib` into your project in the usual way.
 
-In the `giflib-tester` foler you'll find some sample code for resizing. This is more useful than trying to
-read the gifsicle source files.
+In the `giflib-tester` foler you'll find some sample code for using gifsicle to copy, optmize and resize a gif. This is more useful than trying to read the gifsicle source files.
 
+
+**Original Gifsicle Docs:**
+======
 
 Gifsicle
 ========
