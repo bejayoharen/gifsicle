@@ -15,7 +15,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
- 
+
 #ifdef TRACE_LOGGING
 # define TRACE_LOG(...) { fprintf(stderr, "TRACE: "); fprintf(stderr, __VA_ARGS__); fprintf(stderr, "\n"); }
 #else
@@ -44,7 +44,7 @@ extern "C" {
 #else
 # define GIFSICLE_API
 #endif //GIFSICLE_DLL
-    
+
     
 
 /* NOTE: You should define the types uint8_t, uint16_t and uint32_t before
@@ -333,6 +333,21 @@ GIFSICLE_API int             Gif_IncrementalWriteComplete(Gif_Writer* grr, Gif_S
 
 GIFSICLE_API void            Gif_ResizeStream(Gif_Stream* gfs, double new_width, double new_height, int flags, int method, int scale_colors);
 
+
+/** Buffer I/O **/
+struct Gif_Buffer {
+    char *buffer;
+    size_t size;
+};
+typedef struct Gif_Buffer Gif_Buffer;
+    
+GIFSICLE_API Gif_Buffer *Gif_NewBuffer( size_t size );
+
+GIFSICLE_API void Gif_DeleteBuffer( Gif_Buffer *b );
+
+GIFSICLE_API Gif_Stream *Gif_ReadBuffer( Gif_Buffer *buffer );
+
+GIFSICLE_API Gif_Buffer *Gif_WriteBuffer( Gif_Stream *instream );
 
 
 /** HOOKS AND MISCELLANEOUS **/

@@ -30,3 +30,5 @@ ungifsicle-*.rpm
 ungifsicle-*.tar.gz
 compile
 .*.swp
+giflib-tester/giflib-tester
+swig

@@ -1,9 +1,6 @@
-:requires#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "memstream.h"
-#include "fmemopen.h"
 
 #include <lcdfgif/gif.h>
 
@@ -110,15 +107,17 @@ int resizeBuffer( char * input, char *output, int width ) {
 	fseek(infile, 0, SEEK_END);
 	long fsize = ftell(infile);
 	fseek(infile, 0, SEEK_SET);  //same as rewind(f);
+    
+    Gif_Buffer *gbuf = Gif_NewBuffer( fsize );
 
-	char *inbuf = malloc(fsize);
-	if( inbuf == NULL ) {
-		perror( "malloc failed" );
+	if( gbuf == NULL ) {
+		perror( "Buffer creation failed" );
 		return 1;
 	}
-	if( 1 != fread(inbuf, fsize, 1, infile) ) {
+    
+	if( 1 != fread(gbuf->buffer, gbuf->size, 1, infile) ) {
 		perror( "failed to read file" );
-		return 1;
+        return 1;
 	}
 
 	if( fclose(infile) == EOF ) {
@@ -126,18 +125,11 @@ int resizeBuffer( char * input, char *output, int width ) {
 		return 1;
 	}
 
-	// -- make a file pointer from the buffer. This requires POSIX
-	FILE *r = fmemopen( inbuf, fsize, "r" );//binary mode may be necessary on some platforms
-	if( r == NULL ) {
-		perror( "could not open buffer" );
-		return 1;
-	}
 
 	// -- read the file pointer and close it.
-	Gif_Stream *instream = Gif_ReadFile(r); //FIXME: in production code, return val should checked for NULL
+	Gif_Stream *instream = Gif_ReadBuffer(gbuf); //FIXME: in production code, return val should checked for NULL
 
-	fclose( r );
-
+	Gif_DeleteBuffer( gbuf );
 
 
 	// -- -- now we can work with the gif stream.
@@ -150,19 +142,10 @@ int resizeBuffer( char * input, char *output, int width ) {
 	// -- -- now we are ready to save it!
 	
 	// -- make filestream that points to a buffer
-	char *outbuf;
-	size_t outbufsize;
-	FILE *w = open_memstream(&outbuf, &outbufsize);
+    gbuf = Gif_WriteBuffer( instream );
 
-	int a = Gif_WriteFile(instream,w);
-
-	if( a != 1 ) {
-		printf( "Could not write buffer" );
-		return 1;
-	}
-
-	if( fclose(w) == EOF ) {
-		perror( "could not close output." );
+	if( gbuf == NULL ) {
+		perror( "Could not write buffer" );
 		return 1;
 	}
 
@@ -179,7 +162,7 @@ int resizeBuffer( char * input, char *output, int width ) {
 		return 1;
 	}
 
-	if( 1 != fwrite( outbuf, outbufsize, 1, outfile ) ) {
+	if( 1 != fwrite( gbuf->buffer, gbuf->size, 1, outfile ) ) {
 		perror( "Could not write to output file" );
 		return 1;
 	}
@@ -190,7 +173,7 @@ int resizeBuffer( char * input, char *output, int width ) {
 		return 1;
 	}
 
-	free( outbuf );
+	Gif_DeleteBuffer( gbuf );
 
 	return 0;
 }
