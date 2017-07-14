@@ -25,3 +25,5 @@ gcc -W -Wall -fvisibility=hidden -dynamiclib -install_name libgifsicle.dylib -o 
 cd ..
 nm -gU src/libgifsicle.dylib
 otool -D src/libgifsicle.dylib
+
+swig -java -outdir swig gifsicle.i
