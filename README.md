@@ -23,6 +23,38 @@ Now, copy the include folder and `src/libgifsicle.dylib` into your project in th
 
 In the `giflib-tester` folder you'll find some sample code for using gifsicle to copy, optmize and resize a gif. This is more useful than trying to read the gifsicle source files.
 
+COPYRIGHT:
+=========
+
+In addition to crediting Eddie Kohler, who created Gifsicle, this branch uses a small file that
+also require attribution. Attribubution in a compiled app will probably look something like this:
+
+
+Copyright (C) 1997-2014 Eddie Kohler, ekohler@gmail.com
+LCDF GIF library.
+
+The GIF library is free software. It is distributed under the GNU General
+Public License, version 2; you can copy, distribute, or alter it at will,
+as long as this notice is kept intact and this source code is made
+available. There is no warranty, express or implied.
+
+
+Copyright 2011-2014 NimbusKit
+fmemopen
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+
 **Original Gifsicle Docs:**
 ======
 
