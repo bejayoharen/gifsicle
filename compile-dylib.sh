@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -v
 set -e
 
 
@@ -26,4 +26,5 @@ cd ..
 nm -gU src/libgifsicle.dylib
 otool -D src/libgifsicle.dylib
 
-swig -java -outdir swig gifsicle.i
+rm -r swig/gifsicle
+swig -java -outdir swig/gifsicle gifsicle.i

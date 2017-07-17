@@ -40,14 +40,6 @@ extern "C" {
     
 
 typedef struct Gif_Stream       Gif_Stream;
-typedef struct Gif_Image        Gif_Image;
-typedef struct Gif_Colormap     Gif_Colormap;
-typedef struct Gif_Comment      Gif_Comment;
-typedef struct Gif_Extension    Gif_Extension;
-typedef struct Gif_Record       Gif_Record;
-
-typedef uint16_t Gif_Code;
-
 
 /** GIF_STREAM **/
 
@@ -76,128 +68,12 @@ struct Gif_Stream {
 GIFSICLE_API Gif_Stream *    Gif_NewStream(void);
 GIFSICLE_API void            Gif_DeleteStream(Gif_Stream *);
 
-GIFSICLE_API Gif_Stream *    Gif_CopyStreamSkeleton(Gif_Stream *);
-GIFSICLE_API Gif_Stream *    Gif_CopyStreamImages(Gif_Stream *);
-
-GIFSICLE_API void            Gif_CalculateScreenSize(Gif_Stream *, int force);
 GIFSICLE_API int             Gif_Unoptimize(Gif_Stream *);
 GIFSICLE_API int             Gif_FullUnoptimize(Gif_Stream *, int flags);
 
 // optimize flags are (I think) the flags passed to the -O commandline argument.
 // huge_Stream is generally set to true if the file is over 200MB
 GIFSICLE_API void            Gif_OptimizeFragments(Gif_Stream *gfs, int optimize_flags, int huge_stream);
-
-
-/** GIF_IMAGE **/
-
-struct Gif_Image {
-    uint16_t width;
-    uint16_t height;
-
-    uint8_t **img;              /* img[y][x] == image byte (x,y) */
-    uint8_t *image_data;
-
-    uint16_t left;
-    uint16_t top;
-    uint16_t delay;
-    uint8_t disposal;
-    uint8_t interlace;
-
-    Gif_Colormap *local;
-    short transparent;          /* -1 means no transparent index */
-
-    uint16_t user_flags;
-
-    char *identifier;
-    Gif_Comment* comment;
-    Gif_Extension* extension_list;
-
-    void (*free_image_data)(void *);
-
-    uint32_t compressed_len;
-    uint8_t *compressed;
-    void (*free_compressed)(void *);
-
-    void *user_data;
-    void (*free_user_data)(void *);
-    int refcount;
-
-};
-
-GIFSICLE_API Gif_Image *     Gif_NewImage(void);
-GIFSICLE_API void            Gif_DeleteImage(Gif_Image *gfi);
-
-GIFSICLE_API int             Gif_AddImage(Gif_Stream *gfs, Gif_Image *gfi);
-GIFSICLE_API void            Gif_RemoveImage(Gif_Stream *gfs, int i);
-GIFSICLE_API Gif_Image *     Gif_CopyImage(Gif_Image *gfi);
-GIFSICLE_API void            Gif_MakeImageEmpty(Gif_Image* gfi);
-
-GIFSICLE_API Gif_Image *     Gif_GetImage(Gif_Stream *gfs, int i);
-GIFSICLE_API Gif_Image *     Gif_GetNamedImage(Gif_Stream *gfs, const char *name);
-GIFSICLE_API int             Gif_ImageNumber(Gif_Stream *gfs, Gif_Image *gfi);
-
-typedef struct {
-    int flags;
-    void *padding[7];
-} Gif_CompressInfo;
-
-#define         Gif_UncompressImage(gfs, gfi) Gif_FullUncompressImage((gfs),(gfi),0)
-GIFSICLE_API int             Gif_FullUncompressImage(Gif_Stream* gfs, Gif_Image* gfi,
-                                        Gif_ReadErrorHandler handler);
-GIFSICLE_API int             Gif_CompressImage(Gif_Stream *gfs, Gif_Image *gfi);
-GIFSICLE_API int             Gif_FullCompressImage(Gif_Stream *gfs, Gif_Image *gfi,
-                                      const Gif_CompressInfo *gcinfo);
-GIFSICLE_API void            Gif_ReleaseUncompressedImage(Gif_Image *gfi);
-GIFSICLE_API void            Gif_ReleaseCompressedImage(Gif_Image *gfi);
-GIFSICLE_API int             Gif_SetUncompressedImage(Gif_Image *gfi, uint8_t *data,
-                        void (*free_data)(void *), int data_interlaced);
-GIFSICLE_API int             Gif_CreateUncompressedImage(Gif_Image* gfi, int data_interlaced);
-
-GIFSICLE_API int             Gif_ClipImage(Gif_Image *gfi, int l, int t, int w, int h);
-
-GIFSICLE_API void            Gif_InitCompressInfo(Gif_CompressInfo *gcinfo);
-
-
-
-/** GIF_COMMENT **/
-/*
-struct Gif_Comment {
-    char **str;
-    int *len;
-    int count;
-    int cap;
-};
-
-GIFSICLE_API Gif_Comment *   Gif_NewComment(void);
-GIFSICLE_API void            Gif_DeleteComment(Gif_Comment *);
-GIFSICLE_API int             Gif_AddCommentTake(Gif_Comment *, char *, int);
-GIFSICLE_API int             Gif_AddComment(Gif_Comment *, const char *, int);
-*/
-
-/** GIF_EXTENSION **/
-
-/*
-struct Gif_Extension {
-    int kind;
-    char* appname;
-    int applength;
-    uint8_t* data;
-    uint32_t length;
-    int packetized;
-
-    Gif_Stream *stream;
-    Gif_Image *image;
-    Gif_Extension *next;
-    void (*free_data)(void *);
-};
-
-
-GIFSICLE_API Gif_Extension*  Gif_NewExtension(int kind, const char* appname, int applength);
-GIFSICLE_API void            Gif_DeleteExtension(Gif_Extension* gfex);
-GIFSICLE_API Gif_Extension*  Gif_CopyExtension(Gif_Extension* gfex);
-GIFSICLE_API int             Gif_AddExtension(Gif_Stream* gfs, Gif_Image* gfi,
-                                 Gif_Extension* gfex);
-*/
 
 
 /** READING AND WRITING **/
@@ -216,7 +92,6 @@ struct Gif_Record {
 #define GIF_WRITE_OPTIMIZE              4
 #define GIF_WRITE_SHRINK                8
 
-    GIFSICLE_API void            Gif_SetErrorHandler(Gif_ReadErrorHandler handler);
 GIFSICLE_API Gif_Stream*     Gif_ReadFile(FILE* f);
 GIFSICLE_API Gif_Stream*     Gif_FullReadFile(FILE* f, int flags, const char* landmark,
                                  Gif_ReadErrorHandler handler);

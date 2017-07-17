@@ -31,4 +31,5 @@ ungifsicle-*.tar.gz
 compile
 .*.swp
 giflib-tester/giflib-tester
-swig
+swig/gifsicle
+gifsicle_wrap.c
